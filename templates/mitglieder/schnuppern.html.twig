@@ -1,0 +1,32 @@
+{% extends 'public.html.twig' %}
+
+{% block pagetitle %}Schnuppern{% endblock %}
+
+{% block body %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Anmelden für ein Schnupperprogramm</h6>
+    </div>
+    <div class="card-body">
+        <p>Möchtest du bei uns einmal vorbei schauen und dich selbst von unserem Angebot überzeugen? Entscheide anschliessend, ob du weiterhin in den Cevi kommen möchtest, um ein waschechter Cevianer zu werden.</p>
+        <p>Falls du bereits im Cevi bist, darfst du auch gerne Kollegen mit ans Programm bringen. Wer weiss, vielleicht kannst du in Zukunft ja gemeinsam mit deinen besten Freunden ins Cevilager fahren!</p>
+        <p class="font-weight-bold">Melde dich heute für das Cevi-Schupperprogramm an. Fülle einfach das Kontaktformular aus und wir laden dich an unser Programm ein!</p>
+        <div class="card shadow mt-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Anmeldformular</h6>
+            </div>
+            <div class="card-body">
+                {% for message in app.flashes('success') %}
+                    <div class="alert alert-success">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+                {{ form_start(form) }}
+                {{ form_widget(form) }}
+                {{ form_end(form) }}
+                <p class="mt-4 mb-0">Deine Daten werden vertraulich behandelt.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

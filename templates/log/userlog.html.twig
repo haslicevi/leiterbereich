@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block pagetitle %}Einstellungen{% endblock %}
+
+{% block body %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Sessions</h6>
+    </div>
+    <div class="card-body">
+        <table class="table table-striped" id="logs">
+            <thead>
+                <tr>
+                    <th scope="col">User</th>
+                    <th scope="col">CSRF</th>
+                    <th scope="col">Eröffnet</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for l in log %}
+                    <tr>
+                        <td>{{ l.user }}</td>
+                        <td><code>{{ l.csrf }}</code></td>
+                        <td data-order="{{ l.datetime }}">{{ l.datetime|date('d.m.Y H:i:s') }}</td>
+                        <td>
+                            <a href="{{ path('userlog_details', {csrf: l.csrf}) }}" class="btn btn-primary btn-circle btn-sm" data-toggle="tooltip" data-placement="top" title="Details"><i class="fas fa-eye"></i></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="{{ asset('js/datatables.js') }}"></script>
+<link rel="stylesheet" href="{{ asset('css/datatables.css') }}">
+
+<script>
+$(document).ready( function () {
+    $('#logs').DataTable( {
+        "language": {
+            "url": "{{ asset('js/datatables_german.json') }}"
+        },
+        "order": [[2, "desc"]],
+        responsive: true,
+    } );
+} );
+</script>
+<style>
+    .paginate_button {
+        margin-left: 3px;
+        margin-right: 3px;
+    }
+</style>
+{% endblock %}

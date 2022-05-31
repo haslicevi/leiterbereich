@@ -1,0 +1,40 @@
+{% apply spaceless %}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<img src="{{ asset('images/CNN_Logo_white.png') }}" style="position: absolute; top: 0; right: 0; width: 300px;" >
+<h1 class="mt-3 mb-2">Datenplan</h1>
+<h2 class="mb-5">{{ "now"|date("Y") }}</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Datum</th>
+            <th scope="col">Name</th>
+            <th scope="col">Bemerkungen</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for event in events %}
+            {% if event.typ == 1 %}
+                {% set name = "Nachmittagsprogramm" %}
+            {% else %}
+                {% set name = event.name %}
+            {% endif %}
+
+            <tr>
+                <td>
+                    {% if event.von == event.bis %}
+                        {{ event.von|date('d.m.Y') }}
+                    {% else %}
+                        {{ event.von|date('d.m.Y') }} - {{ event.bis|date('d.m.Y') }}
+                    {% endif %}
+                </td>
+                <td>{{ name }}</td>
+                <td>{{ event.bemerkungen }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<p class="mt-5 d-flex justify-content-center">Stand: {{ "now"|date("d.m.Y") }} | www.haslicevi.ch</p>
+<script type="text/javascript">
+    window.print();
+</script>
+{% endapply %}

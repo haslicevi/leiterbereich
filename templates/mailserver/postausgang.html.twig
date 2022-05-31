@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block pagetitle %}Mailserver{% endblock %}
+
+{% block body %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Postausgang</h6>
+    </div>
+    <div class="card-body">
+        <div class="card shadow mb-4 border-bottom-warning">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-warning">Info</h6>
+            </div>
+            <div class="card-body">
+                Die hier aufgelisteten Mails wurden an den Mailserver übertragen und werden zurzeit von diesem versendet. Dies kann bis zu einer Stunde dauern.
+            </div>
+        </div>
+        <table class="table table-striped" id="mails">
+            <thead>
+                <tr>
+                    <th scope="col">An</th>
+                    <th scope="col">Betreff</th>
+                    <th scope="col">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for mail in mails %}
+                    <tr>
+                        <td>{{ mail.an }}</td>
+                        <td>{{ mail.betreff }}</td>
+                        <td><img src="{{ asset('images/loader.gif') }}" style="height: 1em;" class="mr-2" />wird versendet</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="{{ asset('js/datatables.js') }}"></script>
+<link rel="stylesheet" href="{{ asset('css/datatables.css') }}">
+
+<script>
+$(document).ready( function () {
+    $('#mails').DataTable( {
+        "language": {
+            "url": "{{ asset('js/datatables_german.json') }}"
+        },
+        "order": [[0, "desc"]],
+        responsive: true,
+    } );
+} );
+</script>
+<style>
+    .paginate_button {
+        margin-left: 3px;
+        margin-right: 3px;
+    }
+</style>
+{% endblock %}

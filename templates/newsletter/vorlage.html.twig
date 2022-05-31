@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block pagetitle %}Newsletter{% endblock %}
+
+{% block body %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Neuer Newsletter aus Vorlage</h6>
+    </div>
+    <div class="card-body">
+        <a href="{{ path('newsletter') }}" class="btn btn-info btn-icon-split mb-3">
+            <span class="icon text-white-50">
+                <i class="fas fa-undo-alt"></i>
+            </span>
+            <span class="text">Zurück</span>
+        </a>
+        <div class="card shadow mb-4 mt-3">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Vorlagen</h6>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped" id="events">
+                    <thead>
+                        <tr>
+                            <th scope="col">Empfänger</th>
+                            <th scope="col">Betreff</th>
+                            <th scope="col">Titel</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for vorlage in vorlagen %}
+                            <tr>
+                                <td>{{ listen[vorlage.liste] }}</td>
+                                <td>{{ vorlage.betreff }}</td>
+                                <td>{{ vorlage.titel }}</td>
+                                <td align="right">
+                                    <a href="{{ path('newsletter_vorlage_neu', {id: vorlage.id}) }}" class="btn btn-success btn-circle btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="Bearbeiten"><i class="fas fa-check"></i></a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Bereits versendete Newsletter</h6>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped" id="events">
+                    <thead>
+                        <tr>
+                            <th scope="col">Datum</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Empfänger</th>
+                            <th scope="col">Betreff</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for vorlage in versendet %}
+                            <tr>
+                                <td>{{ vorlage.datum|date('d.m.Y') }}</td>
+                                <td>{{ status[vorlage.status] }}</td>
+                                <td>{{ listen[vorlage.liste] }}</td>
+                                <td>{{ vorlage.betreff }}</td>
+                                <td align="right">
+                                    <a href="{{ path('newsletter_vorlage_neu', {id: vorlage.id}) }}" class="btn btn-success btn-circle btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="Bearbeiten"><i class="fas fa-check"></i></a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

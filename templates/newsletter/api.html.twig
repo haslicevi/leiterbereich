@@ -1,0 +1,30 @@
+{% apply spaceless %}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Datum</th>
+            <th scope="col">Betreff</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for mail in newsletter %}
+            <tr>
+                <td>{{ mail.datum|date('d.m.Y') }}</td>
+                <td>{{ mail.betreff }}</td>
+                <td align="right">
+                    <a href="https://login.haslicevi.ch{{ path('newsletter_public', {id: mail.id}) }}" target="_blank" class="btn btn-primary btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="Vorschau">Lesen</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{# {% for mail in newsletter %}
+    <ul class="list-group">
+        <li style="cursor: pointer;" class="list-group-item" onClick="window.location.href = 'https://login.haslicevi.ch{{ path('newsletter_public',{'id': mail.id}) }}';">{{ mail.betreff }}</li>
+    </ul>
+{% endfor %} #}
+{% endapply %}

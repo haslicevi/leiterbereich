@@ -1,0 +1,72 @@
+{% apply spaceless %}
+<!DOCTYPE html>
+<html lang="de">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <link rel="apple-touch-icon" href="{{ asset('images/apple-touch-icon.png') }}" />
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="author" content="Tux v/o Claudio Fleischmann">
+        <meta charset="UTF-8">
+        <title>Haslicevi Login</title>
+        <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}"/>
+        <link href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+        <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/login.css') }}" rel="stylesheet">
+    </head>
+    {# <body style="background-image: url('{{ asset('images/login-bg-min.jpg') }}'); background-position: center; background-repeat: no-repeat; background-size: cover;"> #}
+    {# <body style="background-image: url('{% if ("now"|date("H") > 19 or "now"|date("H") < 7) %}images/login-bg-dark.jpg{% else %}images/login-bg-min.jpg{% endif %}'); background-position: center; background-repeat: no-repeat; background-size: cover;"> #}
+    <body style="background-image: url('images/login-bg-dark.jpg'); background-position: center; background-repeat: no-repeat; background-size: cover;">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-xl-5 col-lg-12 col-md-9">
+                    {# <div class="card o-hidden border-0 shadow-lg my-5" style="background-color: rgba(255,255,255,0.9);"> #}
+                    <div class="card o-hidden border-0 shadow-lg my-5" style="background-color: #eeeeee;">
+                        <div class="card-body p-0">
+                            <div class="row">
+                                {# <div class="col-lg-6 d-none d-lg-block" style="background: url({{ asset('images/login.png') }}); background-position: center; background-size: cover;"></div> #}
+                                <div class="col-lg-12">
+                                    <div class="p-5">
+                                        <div class="text-center">
+                                            <img src="{{ asset('images/logo_grau.png') }}" width="90%" class="mb-5" />
+                                            {# <h1 class="h4 text-gray-900 mb-4">Leiterbereich</h1> #}
+                                        </div>
+                                        <form method="post" class="user">
+                                            {% if error %}
+                                                <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                                            {% endif %}
+                                            <div class="form-group">
+                                                <input type="text" value="{{ last_username }}" name="user" id="inputName" class="form-control form-control-user" placeholder="Ceviname" required autofocus>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="password" name="password" id="inputPassword" class="form-control form-control-user" placeholder="Passwort" required>
+                                                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                                            </div>
+                                            <button type="submit" class="btn btn-primary btn-user btn-block"><i class="fas fa-lock mr-2"></i>Anmelden</button>
+                                            {# <div class="text-center mt-3">
+                                                <a class="small text-primary" href="mailto:tux@haslicevi.ch?subject=Leiterbereich Passwort vergessen">Passwort vergessen</a>
+                                            </div> #}
+                                            <hr>
+                                            {# <a href="{{ path('myhaslicevi') }}" class="btn btn-primary btn-user btn-block">Zum MyHaslicevi</a> #}
+                                            <a href="https://haslicevi.ch/my" class="btn btn-info btn-user btn-block"><i class="fas fa-users mr-2"></i>MyHaslicevi</a>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="loginFooter">
+            &copy; {{ "now"|date("Y") }} Haslicevi | {{ version }}
+        </div>
+        <script src="vendor/jquery/jquery.min.js"></script>
+        <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+        <script src="js/sb-admin-2.min.js"></script>
+    </body>
+</html>
+{% endapply %}

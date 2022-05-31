@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block pagetitle %}Einstellungen{% endblock %}
+
+{% block body %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Production Logs</h6>
+    </div>
+    <div class="card-body">
+        <table class="table table-striped" id="logs">
+            <thead>
+                <tr>
+                    <th scope="col">Datum</th>
+                    <th scope="col">Typ</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for l in log %}
+                    <tr>
+                        <td width="10%" data-order="{{ l.dateOrder }}">{{ l.date }}</td>
+                        <td width="15%" ><code>{{ l.type }}</code></td>
+                        <td style="cursor: pointer;" onClick="alert('{{ l.content }}');"><code>{{ l.content }}</code></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="{{ asset('js/datatables.js') }}"></script>
+<link rel="stylesheet" href="{{ asset('css/datatables.css') }}">
+
+<script>
+$(document).ready( function () {
+    $('#logs').DataTable( {
+        "language": {
+            "url": "{{ asset('js/datatables_german.json') }}"
+        },
+        "order": [[0, "desc"]],
+        responsive: true,
+    } );
+} );
+</script>
+<style>
+    .paginate_button {
+        margin-left: 3px;
+        margin-right: 3px;
+    }
+</style>
+{% endblock %}

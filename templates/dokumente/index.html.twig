@@ -1,0 +1,126 @@
+{% extends 'base.html.twig' %}
+
+{% block pagetitle %}Dokumente{% endblock %}
+
+{% block body %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Dokumente</h6>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-danger" id="chromeAlert">
+            <b>Achtung:</b> Das Hochladen von Dokumenten funktioniert nur mit neueren Versionen von Google Chrome optimal. Bitte benutze diesen Browser dafür. (<a href="https://www.google.com/intl/de/chrome/" target="_blank">Google Chrome herunterladen</a>)
+        </div>
+        <a href="{{ path('dokumente_upload1') }}" class="btn btn-info btn-icon-split mb-4 {% if is_granted('ROLE_ADMIN') == false %}disabled{% endif %}">
+            <span class="icon text-white-50">
+                <i class="fas fa-upload"></i>
+            </span>
+            <span class="text">Neues Dokument hochladen</span>
+        </a>
+        <table class="table table-striped" id="dokumente">
+            <thead>
+                <tr>
+                    <th scope="col">Datum</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Typ</th>
+                    <th scope="col">Anzeigen im MyHaslicevi</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set icons = {'pdf': 'file-pdf', 'word': 'file-word', 'excel': 'file-excel'} %} {# Icons für File-Typen #}
+                {% for dokument in dokumente %}
+                    <tr>
+                        <td data-order="{{ dokument.datum|date('Ymd') }}">{{ dokument.datum|date('d.m.Y') }}</td>
+                        <td>{{ dokument.name }}</td>
+                        <td>
+                            {% if dokument.url|split('.')|last in icons|keys %}
+                                <i class="fas fa-{{ icons[dokument.url|split('.')|last] }}"></i>
+                            {% else %}
+                                <i class="fas fa-file-alt"></i>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if dokument.myhaslicevi %}
+                                <a href="javascript:void(0)" class="btn btn-success btn-circle btn-sm mr-2" ><i class="fas fa-check"></i></a>
+                            {% else %}
+                                <a href="javascript:void(0)" class="btn btn-danger btn-circle btn-sm mr-2" ><i class="fas fa-times"></i></a>
+                            {% endif %}
+                        </td>
+                        <td align="right" width="15%">
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <a href="https://docs.haslicevi.ch/d/{{ dokument.url }}" target="_blank" class="btn btn-info btn-circle btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="Anzeigen"><i class="fas fa-eye"></i></a>
+                                <a href="" onClick="shareLink('https://docs.haslicevi.ch/d/{{ dokument.url }}')" class="btn btn-success btn-circle btn-sm mr-2" data-toggle="modal" data-target="#LinkKopieren" title="Link Kopieren"><i class="fas fa-copy"></i></a>
+                                <a href="{{ path('dokumente_edit', {id: dokument.id}) }}" class="btn btn-primary btn-circle btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="Bearbeiten"><i class="fas fa-edit"></i></a>
+                                <a href="javascript:delete_ajax('{{ path('dokumente_delete', {id: dokument.id}) }}', '{{ dokument.name }}')" class="btn btn-danger btn-circle btn-sm" data-toggle="tooltip" data-placement="top" title="Löschen"><i class="fas fa-trash"></i></a>
+                            {% else %}
+                                <a href="https://docs.haslicevi.ch/d/{{ dokument.url }}" target="_blank" class="btn btn-info btn-circle btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="Anzeigen"><i class="fas fa-eye"></i></a>
+                                <a href="" onClick="shareLink('https://docs.haslicevi.ch/d/{{ dokument.url }}')" class="btn btn-success btn-circle btn-sm mr-2" data-toggle="modal" data-target="#LinkKopieren" title="Link Kopieren"><i class="fas fa-copy"></i></a>
+                                <a href="#" class="btn btn-primary btn-circle btn-sm mr-2 disabled" data-toggle="tooltip" data-placement="top" title="Bearbeiten"><i class="fas fa-edit"></i></a>
+                                <a href="#" class="btn btn-danger btn-circle btn-sm disabled" data-toggle="tooltip" data-placement="top" title="Löschen"><i class="fas fa-trash"></i></a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="LinkKopieren" tabindex="-1" role="dialog" aria-labelledby="LinkKopierenLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="LinkKopierenLabel">Link Kopieren</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Hier findest du den Link für das Dokument:</p>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Link" aria-label="Link" id="shareLink" onClick="this.setSelectionRange(0, this.value.length)">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Schliessen</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="{{ asset('js/datatables.js') }}"></script>
+<link rel="stylesheet" href="{{ asset('css/datatables.css') }}">
+
+<script>
+$(document).ready( function () {
+    $('#dokumente').DataTable( {
+        "language": {
+            "url": "{{ asset('js/datatables_german.json') }}"
+        },
+        "order": [[0, "desc"]],
+        responsive: true,
+    } );
+
+    if(/Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor)) {
+        document.querySelector('#chromeAlert').style.display = 'none';
+    }
+} );
+</script>
+<style>
+    .paginate_button {
+        margin-left: 3px;
+        margin-right: 3px;
+    }
+</style>
+
+<script>
+function shareLink(url) {
+    var input = document.querySelector('#shareLink');
+    input.value = url;
+    input.setSelectionRange(0, input.value.length)
+}
+</script>
+{% endblock %}

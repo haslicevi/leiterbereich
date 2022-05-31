@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block pagetitle %}Newsletter{% endblock %}
+
+{% block body %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Newsletter</h6>
+    </div>
+    <div class="card-body">
+        {% if postausgang != 0 %}
+            <div class="card shadow mb-4 border-bottom-warning">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-warning">Info</h6>
+                </div>
+                <div class="card-body">
+                    <p>Es befinden sich noch Mails im Versand: <a href="{{ path('mailserver_postausgang') }}">Anzeigen</a></p>
+                </div>
+            </div>
+        {% endif %}
+        <a href="{{ path('newsletter_new') }}" class="btn btn-info btn-icon-split mb-3">
+            <span class="icon text-white-50">
+                <i class="fas fa-plus"></i>
+            </span>
+            <span class="text">Neuer Newsletter</span>
+        </a>
+        <a href="{{ path('newsletter_vorlage') }}" class="btn btn-info btn-icon-split mb-3 ml-2">
+            <span class="icon text-white-50">
+                <i class="fas fa-plus"></i>
+            </span>
+            <span class="text">Neu aus Vorlage</span>
+        </a>
+        <a href="{{ path('mailingliste') }}" class="btn btn-secondary mb-3 float-right">Empfänger bearbeiten</a>
+        <table class="table table-striped" id="mitglieder">
+            <thead>
+                <tr>
+                    <th scope="col">Datum</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Empfänger</th>
+                    <th scope="col">Betreff</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for mail in newsletter %}
+                    <tr>
+                        <td>{{ mail.datum|date('d.m.Y') }}</td>
+                        <td>{{ status[mail.status] }}</td>
+                        <td>{{ listen[mail.liste] }}</td>
+                        <td>{{ mail.betreff }}</td>
+                    {% if mail.status != 2 or is_granted('ROLE_ROOT') %}
+                        <td align="right">
+                            <a href="{{ path('newsletter_vorschau', {id: mail.id}) }}" class="btn btn-info btn-circle btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="Vorschau"><i class="fas fa-eye"></i></a>
+                            <a href="{{ path('newsletter_write', {id: mail.id}) }}" class="btn btn-primary btn-circle btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="Inhalt Bearbeiten"><i class="fas fa-edit"></i></a>
+                            <a href="{{ path('newsletter_edit', {id: mail.id}) }}" class="btn btn-primary btn-circle btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="Einstellungen"><i class="fas fa-cog"></i></a>
+                            <a href="javascript:delete_ajax('{{ path('newsletter_delete', {id: mail.id}) }}', '{{ mail.betreff }}')" class="btn btn-danger btn-circle btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="Löschen"><i class="fas fa-trash"></i></a>
+                            <a href="{{ path('newsletter_send', {id: mail.id}) }}" class="btn btn-warning btn-circle btn-sm" data-toggle="tooltip" data-placement="top" title="Senden"><i class="fas fa-paper-plane"></i></a>
+                        </td>
+                    {% else %}
+                        <td align="right">
+                            <a href="{{ path('newsletter_vorschau', {id: mail.id}) }}" class="btn btn-info btn-circle btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="Vorschau"><i class="fas fa-eye"></i></a>
+                            <a href="javascript:void(0)" class="btn btn-primary btn-circle btn-sm mr-2 disabled" data-toggle="tooltip" data-placement="top" title="Inhalt Bearbeiten"><i class="fas fa-edit"></i></a>
+                            <a href="javascript:void(0)" class="btn btn-primary btn-circle btn-sm mr-2 disabled" data-toggle="tooltip" data-placement="top" title="Einstellungen"><i class="fas fa-cog"></i></a>
+                            <a href="javascript:void(0)" class="btn btn-danger btn-circle btn-sm mr-2 disabled" data-toggle="tooltip" data-placement="top" title="Löschen"><i class="fas fa-trash"></i></a>
+                            <a href="javascript:void(0)" class="btn btn-warning btn-circle btn-sm disabled" data-toggle="tooltip" data-placement="top" title="Senden"><i class="fas fa-paper-plane"></i></a>
+                        </td>
+                    {% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

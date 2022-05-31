@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block pagetitle %}Newsletter{% endblock %}
+
+{% block body %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Newsletter "{{ newsletter.betreff }}" senden</h6>
+    </div>
+    <div class="card-body">
+        <a href="{{ path('newsletter') }}" class="btn btn-info btn-icon-split mb-3">
+            <span class="icon text-white-50">
+                <i class="fas fa-undo-alt"></i>
+            </span>
+            <span class="text">Zurück</span>
+        </a>
+        {% if msg %}
+            <div class="card shadow my-4 border-bottom-{{ msg[0] }}">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-{{ msg[0] }}">{{ msg[1] }}</h6>
+                </div>
+                <div class="card-body">
+                    {{ msg[2] }}
+                </div>
+            </div>
+        {% endif %}
+        {% if sendable %}
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Vorschau</h6>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th scope="row">Von</th>
+                                <td>CEVI Niederhasli Niederglatt (<a href="mailto:no-reply@haslicevimail.ch">no-reply@haslicevimail.ch</a>)</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">An</th>
+                                <td>{{ an }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Betreff</th>
+                                <td>{{ newsletter.betreff }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <iframe src="../../newsletter/preview/{{ newsletter.id }}/{{ app.user.username }}" width="100%" id="preview"></iframe>
+                </div>
+            </div>
+            <a href="{{ path('newsletter_send_definitively', {id: newsletter.id}) }}" class="btn btn-warning btn-icon-split mb-3" onClick="senden();">
+            {# <a href="javascript:void(0)" class="btn btn-warning btn-icon-split mb-3" onClick="senden();"> #}
+                <span class="icon text-white-50">
+                    <i class="fas fa-thumbs-up"></i>
+                </span>
+                <span class="text">Ja, senden</span>
+            </a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<img style="position: absolute; margin: auto; top: 0; left: 0; right: 0; bottom: 0; display: none;" src="{{ asset('images/mail-loading.gif') }}" alt="Wird gesendet..." id="sendenAnimation" />
+
+<script>
+    var iframe = document.querySelector('#preview');
+    iframe.onload = function() {
+        var iFrame = document.querySelector('#preview');
+        iFrame.height = iFrame.contentWindow.document.body.scrollHeight + 50;
+    }
+
+    function senden() {
+        document.querySelector('#wrapper').style.webkitFilter = "blur(2px)";
+        document.querySelector('#sendenAnimation').style.display = "block";
+        window.scrollTo( 0, screen.height/2 );
+    }
+</script>
+{% endblock %}

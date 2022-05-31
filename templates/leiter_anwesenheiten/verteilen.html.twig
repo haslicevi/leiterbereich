@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block pagetitle %}Anwesenheiten{% endblock %}
+
+{% block body %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Programm wählen</h6>
+    </div>
+    <div class="card-body">
+        <form class="row g-3">
+            <div class="col-auto">
+                <select id="event" class="form-control mb-3">
+                    {% for event in events %}
+                        <option value="{{ event.id }}" {% if event.id == nextEvent.id %}selected{% endif %}>{% if event.active == 0 %}(!!) {% endif %}{{ event.von|date("d.m.Y") }} - {% if event.typ == 1 %}Nachmittagsprogramm{% else %}{{ event.name }}{% endif %}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-auto">
+                <button type="button" class="btn btn-primary mb-3" id="weiter">Weiter</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    $('#weiter').click(function () {
+        window.location.href = 'qs/' + document.querySelector('#event').value;
+    });
+</script>
+{% endblock %}

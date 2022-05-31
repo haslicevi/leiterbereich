@@ -1,0 +1,52 @@
+{% extends 'public.html.twig' %}
+
+{% block pagetitle %}Anmeldung{% endblock %}
+
+{% block body %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Anmelden im Haslicevi</h6>
+    </div>
+    <div class="card-body">
+        <p>Hier kannst du dich definitiv im CEVI Niederhasli Niederglatt anmelden.</p>
+        <div class="card shadow mt-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Login</h6>
+            </div>
+            <div class="card-body">
+                {% if msg %}
+                    <div class="card shadow mb-4 border-bottom-{{ msg.color }}">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-{{ msg.color }}">Info</h6>
+                        </div>
+                        <div class="card-body">
+                            <p>{{ msg.text|raw }}</p>
+                        </div>
+                    </div>
+                {% endif %}
+                <form id="loginform">
+                    <div class="form-group">
+                        <label for="vorname" required>Token</label>
+                        <input type="text" class="form-control" id="token">
+                    </div>
+                    <button type="button" class="btn btn-primary mt-2" onClick="login()">Anmelden</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+function login() {
+    var uri = '{{ path('public_anmeldungIndex', {token: 'xtokenx'}) }}';
+    uri = uri.replace('xtokenx', document.querySelector('#token').value);
+    if(document.querySelector('#token').value != '') {
+        window.location.href = uri;
+    } else {
+        alert('Bitte fülle alle Felder aus.');
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends 'public.html.twig' %}
+
+{% block pagetitle %}MyHaslicevi{% endblock %}
+
+{% block body %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">MyHaslicevi Login</h6>
+    </div>
+    <div class="card-body">
+        {% if msg %}
+            <div class="card shadow mb-4 border-bottom-{{ msg.color }}">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-{{ msg.color }}">Info</h6>
+                </div>
+                <div class="card-body">
+                    <p>{{ msg.text|raw }}</p>
+                </div>
+            </div>
+        {% endif %}
+        <form id="loginform">
+            <div class="form-group">
+                <label for="vorname" required>Vorname</label>
+                <input type="text" class="form-control" id="vorname">
+            </div>
+            <div class="form-group">
+                <label for="mail" required>Mail Adresse</label>
+                <input type="email" class="form-control" id="mail">
+            </div>
+            <div class="form-group">
+                <label for="stufe">Stufe</label>
+                <select class="form-control" id="stufe" required>
+                    <option selected disabled value="-">Bitte wählen...</option>
+                    {% for stufe in stufen %}
+                        <option value="{{ stufe.id }}">{{ stufe.stufenname }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="hausnr">Hausnummer (Adresse)</label>
+                <input type="text" class="form-control" id="hausnr" required>
+            </div>
+            <button type="button" class="btn btn-primary mt-2" onClick="login()">Anmelden</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+function login() {
+    var uri = '{{ path('myhaslicevi_login', {page: 'index', vorname: 'xvornamex', mail: 'xmailx', stufe: 'xstufex', nr: 'xnrx'}) }}';
+    uri = uri.replace('xvornamex', document.querySelector('#vorname').value);
+    uri = uri.replace('xmailx', document.querySelector('#mail').value);
+    uri = uri.replace('xstufex', document.querySelector('#stufe').value);
+    uri = uri.replace('xnrx', document.querySelector('#hausnr').value);
+    if(document.querySelector('#vorname').value != '' && document.querySelector('#mail').value != '' && document.querySelector('#stufe').value != '-' && document.querySelector('#hausnr').value != '') {
+        window.location.href = uri;
+    } else {
+        alert('Bitte fülle alle Felder aus.');
+    }
+}
+
+$(document).on('keypress',function(e) {
+    if(e.which == 13) {
+        login();
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block pagetitle %}Anwesenheiten{% endblock %}
+
+{% block body %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Leiter Anwesenheiten für "{{ event.von|date("d.m.Y") }} - {% if event.typ == 1 %}Nachmittagsprogramm{% else %}{{ event.name }}{% endif %}" eintragen</h6>
+    </div>
+    <div class="card-body">
+        <a href="{{ path('anwesenheiten_leiter_verteilen') }}" class="btn btn-info btn-icon-split mb-3">
+            <span class="icon text-white-50">
+                <i class="fas fa-list"></i>
+            </span>
+            <span class="text">Programm ändern</span>
+        </a>
+        <table class="table table-striped">
+            <tbody>
+                {% for lt in leiter %}
+                    <tr class="person" id="tr{{ lt.id }}">
+                        <td>
+                            {% if lt.ceviname %}
+                                {{ lt.ceviname }}
+                            {% else %}
+                                {{ lt.vorname }} {{ lt.nachname|first }}.
+                            {% endif %}
+                        </td>
+                        <td align="right">
+                            <a href="javascript:qs.anwesend('{{ lt.id }}')" id="a1-{{ lt.id }}" class="btn btn-success btn-circle btn-sm" data-toggle="tooltip" data-placement="top" title="Anwesend"><i class="fas fa-check"></i></a>
+                            <a href="javascript:qs.abwesend('{{ lt.id }}')" id="a3-{{ lt.id }}" class="btn btn-danger btn-circle btn-sm" data-toggle="tooltip" data-placement="top" title="Abwesend"><i class="fas fa-times"></i></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    $( document ).ready(function() {
+        var trs = document.getElementsByClassName('person');
+        for(i = 0; i < trs.length; i++) {
+            var tr = trs[i];
+            var uri = "{{ path('anwesenheiten_ajaxGet', {event: event.id, mitglied: 'XXX'}) }}";
+            $.ajax({url: uri.replace('XXX', tr.id.replace('tr',''))}).done(function(data) {
+                data = data.split('-');
+                if(data[1] == 1) {
+                    document.querySelector('#tr'+data[0]).classList.add("border-left-success");
+                    document.querySelector('#a1-'+data[0]).classList.add("disabled");
+                } else {
+                    document.querySelector('#tr'+data[0]).classList.add("border-left-danger");
+                    document.querySelector('#a3-'+data[0]).classList.add("disabled");
+                }
+            });
+        }
+    });
+
+    var qs = {
+        anwesend: function(id) {
+            var uri = "{{ path('anwesenheiten_ajax', {event: event.id, mitglied: 'XXX', status: 1}) }}";
+            $.ajax({url: uri.replace('XXX', id)});
+            var tr = document.querySelector('#tr'+id);
+            tr.classList.remove("border-left-danger");
+            tr.classList.remove("border-left-secondary");
+            tr.classList.add("border-left-success");
+            document.querySelector('#a1-'+id).classList.add("disabled");
+            document.querySelector('#a3-'+id).classList.remove("disabled");
+        },
+        abwesend: function(id) {
+            var uri = "{{ path('anwesenheiten_ajax', {event: event.id, mitglied: 'XXX', status: 0}) }}";
+            $.ajax({url: uri.replace('XXX', id)});
+            var tr = document.querySelector('#tr'+id);
+            tr.classList.remove("border-left-success");
+            tr.classList.remove("border-left-secondary");
+            tr.classList.add("border-left-danger");
+            document.querySelector('#a1-'+id).classList.remove("disabled");
+            document.querySelector('#a3-'+id).classList.add("disabled");
+        }
+    };
+</script>
+{% endblock %}

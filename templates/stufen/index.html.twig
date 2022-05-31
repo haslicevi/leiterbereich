@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block pagetitle %}Einstellungen{% endblock %}
+
+{% block body %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Stufen</h6>
+    </div>
+    <div class="card-body">
+        <a href="{{ path('stufen_new') }}" class="btn btn-info btn-icon-split mb-3">
+            <span class="icon text-white-50">
+                <i class="fas fa-plus"></i>
+            </span>
+            <span class="text">Neue Stufe</span>
+        </a>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Stufenname</th>
+                    <th scope="col">Jahrgänge</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stufe in stufen %}
+                    <tr>
+                        <td>{{ stufe.stufenname }}</td>
+                        <td>{{ stufe.jahrgaenge }}</td>
+                        <td align="right">
+                            <a href="{{ path('stufen_edit', {id: stufe.id}) }}" class="btn btn-primary btn-circle btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="Bearbeiten"><i class="fas fa-edit"></i></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

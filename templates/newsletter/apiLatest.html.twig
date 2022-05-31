@@ -1,0 +1,82 @@
+{% apply spaceless %}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+{# <table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Datum</th>
+            <th scope="col">Betreff</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for mail in newsletter %}
+            <tr>
+                <td>{{ mail.datum|date('d.m.Y') }}</td>
+                <td>{{ mail.betreff }}</td>
+                <td align="right">
+                    <a href="https://login.haslicevi.ch{{ path('newsletter_public', {id: mail.id}) }}" target="_blank" class="btn btn-primary btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="Vorschau">Lesen</a>
+                </td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="3" align="center"><a href="https://haslicevi.ch/newsletter-archiv">Mehr anzeigen</a></td>
+        </tr>
+    </tbody>
+</table> #}
+
+{# <div class="row">
+    {% for mail in newsletter %}
+    <div class="col-sm-6 mb-4">
+        <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{ mail.betreff }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">{{ mail.datum|date('d.m.Y') }}</h6>
+            <p class="card-text">{{ mail.titel }}</p>
+            <a href="https://login.haslicevi.ch{{ path('newsletter_public', {id: mail.id}) }}" target="_blank" class="btn btn-primary">Anzeigen</a>
+        </div>
+        </div>
+    </div>
+    {% endfor %}
+</div> #}
+{% set monate = ["", "Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"] %}
+<div class="wp-block-kadence-posts kb-posts kb-posts-id-_0ff15d-c4 content-wrap grid-cols kb-posts-style-boxed grid-sm-col-2 grid-lg-col-2 item-image-style-above">
+    {% for mail in newsletter %}
+        <article class="entry content-bg loop-entry post-632 post type-post status-publish format-standard category-allgemein">
+            <div class="entry-content-wrap">
+                <header class="entry-header">
+                    <h3 class="entry-title"><a href="https://login.haslicevi.ch{{ path('newsletter_public', {id: mail.id}) }}" target="_blank" rel="bookmark">{{ mail.betreff }}</a></h3>
+                    <div class="entry-meta entry-meta-divider-dot">
+                        <span class="posted-on">
+                            <time class="entry-date published">{{ mail.datum|date('j') }}. {{ monate[mail.datum|date('n')] }} {{ mail.datum|date('Y') }}</time
+                        </span>
+                    </div>
+                    <!-- .entry-meta -->
+                </header>
+                <!-- .entry-header -->
+                <div class="entry-summary">
+                    <p>{{ mail.titel }}</p>
+                </div>
+                <!-- .entry-summary -->
+                <footer class="entry-footer">
+                    <div class="entry-actions">
+                        <p class="more-link-wrap">
+                            <a href="https://login.haslicevi.ch{{ path('newsletter_public', {id: mail.id}) }}" target="_blank" class="post-more-link">
+                                Mehr<span class="screen-reader-text"> Einladung GV 2022</span>
+                                <span class="kadence-svg-iconset svg-baseline">
+                                    <svg aria-hidden="true" class="kadence-svg-icon kadence-arrow-right-alt-svg" fill="currentColor" version="1.1" xmlns="http://www.w3.org/2000/svg" width="27" height="28" viewBox="0 0 27 28">
+                                        <title>Continue</title>
+                                        <path d="M27 13.953c0 0.141-0.063 0.281-0.156 0.375l-6 5.531c-0.156 0.141-0.359 0.172-0.547 0.094-0.172-0.078-0.297-0.25-0.297-0.453v-3.5h-19.5c-0.281 0-0.5-0.219-0.5-0.5v-3c0-0.281 0.219-0.5 0.5-0.5h19.5v-3.5c0-0.203 0.109-0.375 0.297-0.453s0.391-0.047 0.547 0.078l6 5.469c0.094 0.094 0.156 0.219 0.156 0.359v0z"></path>
+                                    </svg>
+                                </span>
+                            </a>
+                        </p>
+                    </div>
+                    <!-- .entry-actions -->
+                </footer>
+                <!-- .entry-footer -->	
+            </div>
+        </article>
+    {% endfor %}
+</div>
+{% endapply %}

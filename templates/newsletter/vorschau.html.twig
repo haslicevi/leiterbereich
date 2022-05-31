@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block pagetitle %}Newsletter{% endblock %}
+
+{% block body %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Vorschau für Newsletter "{{ newsletter.betreff }}"</h6>
+    </div>
+    <div class="card-body">
+        <a href="{{ path('newsletter') }}" class="btn btn-info btn-icon-split mb-3">
+            <span class="icon text-white-50">
+                <i class="fas fa-undo-alt"></i>
+            </span>
+            <span class="text">Zurück</span>
+        </a>
+        <table class="table mt-3">
+            <tbody>
+                <tr>
+                    <th scope="row">Von</th>
+                    <td>CEVI Niederhasli Niederglatt (<a href="mailto:no-reply@haslicevimail.ch">no-reply@haslicevimail.ch</a>)</td>
+                </tr>
+                <tr>
+                    <th scope="row">An</th>
+                    <td>{{ app.user.username|capitalize }} (<a href="mailto:{{ app.user.username }}@haslicevi.ch">{{ app.user.username }}@haslicevi.ch</a>)</td>
+                </tr>
+                <tr>
+                    <th scope="row">Betreff</th>
+                    <td>{{ newsletter.betreff }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <iframe src="../../newsletter/preview/{{ newsletter.id }}/{{ app.user.username }}" width="100%" id="preview"></iframe>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    var iframe = document.querySelector('#preview');
+    iframe.onload = function() {
+        var iFrame = document.querySelector('#preview');
+        iFrame.height = iFrame.contentWindow.document.body.scrollHeight + 50;
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,251 @@
+{# {% apply spaceless %} #}
+<!DOCTYPE html>
+<html lang="de">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <link rel="apple-touch-icon" href="{{ asset('images/apple-touch-icon.png') }}" />
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="author" content="Tux v/o Claudio Fleischmann">
+        <meta charset="UTF-8">
+        <title>{% block title %}Haslicevi Login{% endblock %}</title>
+        <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}"/>
+        <link href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+        <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet">
+        {% block stylesheets %}{% endblock %}
+    </head>
+    <body id="page-top">
+        <div id="wrapper">
+            <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ path('home') }}">
+                <img src="{{ asset('images/logo.png') }}" style="max-width: 50px;" >
+                {# <div class="sidebar-brand-text mx-3">Login <sup>CNN</sup></div> #}
+                <div class="sidebar-brand-text mx-3">Haslicevi</sup></div>
+            </a>
+            <hr class="sidebar-divider my-0">
+            <li class="nav-item {% if 'HomeController' in app.request.attributes.get("_controller") %}active{% endif %}">
+              <a class="nav-link" href="{{ path('home') }}">
+                <i class="fas fa-fw fa-home"></i>
+                <span>Home</span>
+              </a>
+            </li>
+            <hr class="sidebar-divider">
+            <div class="sidebar-heading">Leiterbereich</div>
+            <li class="nav-item {% if 'EventsController' in app.request.attributes.get("_controller") %}active{% endif %}">
+              <a class="nav-link" href="{{ path('events') }}">
+                <i class="fas fa-fw fa-calendar"></i>
+                <span>Events</span>
+              </a>
+            </li>
+            <li class="nav-item {% if 'MitgliederController' in app.request.attributes.get("_controller") %}active{% endif %}">
+              <a class="nav-link" href="{{ path('mitglieder') }}">
+                <i class="fas fa-fw fa-users"></i>
+                <span>Mitglieder</span>
+              </a>
+            </li>
+{% if is_granted('ROLE_ADMIN') %}
+            <li class="nav-item {% if 'AnwesenheitenController' in app.request.attributes.get("_controller") or 'LeiterAnwesenheitenController' in app.request.attributes.get("_controller") %}active{% endif %}">
+              <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAnwesenheiten" aria-expanded="true" aria-controls="collapseAnwesenheiten">
+                <i class="fas fa-fw fa-clock"></i>
+                <span>Anwesenheiten</span>
+              </a>
+              <div id="collapseAnwesenheiten" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                  <a class="collapse-item" href="{{ path('anwesenheiten') }}">Teilnehmer</a>
+                  <a class="collapse-item" href="{{ path('leiter_anwesenheiten') }}">Leiter</a>
+                </div>
+              </div>
+            </li>
+{% else %}
+            <li class="nav-item {% if 'AnwesenheitenController' in app.request.attributes.get("_controller") %}active{% endif %}">
+              <a class="nav-link" href="{{ path('anwesenheiten') }}">
+                <i class="fas fa-fw fa-clock"></i>
+                <span>Anwesenheiten</span>
+              </a>
+            </li>
+{% endif %}
+			      <li class="nav-item {% if 'BilderController' in app.request.attributes.get("_controller") %}active{% endif %}">
+              <a class="nav-link" href="{{ path('bilder') }}">
+                <i class="fas fa-fw fa-image"></i>
+                <span>Bilder</span>
+              </a>
+            </li>
+            <li class="nav-item {% if 'DokumenteController' in app.request.attributes.get("_controller") %}active{% endif %}">
+              <a class="nav-link" href="{{ path('dokumente') }}">
+                <i class="fas fa-fw fa-file"></i>
+                <span>Dokumente</span>
+              </a>
+            </li>
+            <li class="nav-item {% if 'WebseiteController' in app.request.attributes.get("_controller") %}active{% endif %}">
+              <a class="nav-link" href="{{ path('webseite') }}">
+                <i class="fas fa-fw fa-globe"></i>
+                <span>Webseite</span>
+              </a>
+            </li>
+            <li class="nav-item {% if 'NewsletterController' in app.request.attributes.get("_controller") %}active{% endif %}">
+              <a class="nav-link" href="{{ path('newsletter') }}">
+                <i class="fas fa-fw fa-envelope"></i>
+                <span>Newsletter</span>
+              </a>
+            </li>
+{# {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_FINANCE') or is_granted('ROLE_SHOP') %}
+            <li class="nav-item {% if 'FinanzenController' in app.request.attributes.get("_controller") %}active{% endif %}">
+              <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFinanzen" aria-expanded="true" aria-controls="collapseFinanzen">
+                <i class="fas fa-fw fa-coins"></i>
+                <span>Finanzen</span>
+              </a>
+              <div id="collapseFinanzen" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                  <a class="collapse-item" href="{{ path('spesen') }}">Spesen</a>
+                  <a class="collapse-item" href="{{ path('rechnungen') }}">Rechnungen</a>
+                </div>
+              </div>
+            </li>
+{% else %}
+            <li class="nav-item {% if 'Finanzen' in app.request.attributes.get("_controller") %}active{% endif %}">
+              <a class="nav-link" href="{{ path('spesen') }}">
+                <i class="fas fa-fw fa-coins"></i>
+                <span>Spesen</span>
+              </a>
+            </li>
+{% endif %} #}
+{% if is_granted('ROLE_ADMIN') or is_granted('ROLE_SHOP') %}
+            <li class="nav-item {% if 'ShopController' in app.request.attributes.get("_controller") %}active{% endif %}">
+              <a class="nav-link" href="{{ path('shop') }}">
+                <i class="fas fa-fw fa-shopping-cart"></i>
+                <span>Lädeli</span>
+              </a>
+            </li>
+{% endif %}
+{% if is_granted('ROLE_ADMIN') %}
+            <li class="nav-item {% if 'KghController' in app.request.attributes.get("_controller") %}active{% endif %}">
+              <a class="nav-link" href="{{ path('kgh') }}">
+                <i class="fas fa-fw fa-building"></i>
+                <span>KGH Räume</span>
+              </a>
+            </li>
+{% endif %}
+{% if is_granted('ROLE_ADMIN') %}
+            <hr class="sidebar-divider">
+            <div class="sidebar-heading">Admin</div>
+            {# <li class="nav-item {% if 'AccountController' in app.request.attributes.get("_controller") %}active{% endif %}">
+              <a class="nav-link" href="{{ path('account_list') }}">
+                <i class="fas fa-fw fa-user-cog"></i>
+                <span>Benutzer</span>
+              </a>
+            </li> #}
+            <li class="nav-item {% if 'MailserverController' in app.request.attributes.get("_controller") %}active{% endif %}">
+              <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMailserver" aria-expanded="true" aria-controls="collapseMailserver">
+                <i class="fas fa-fw fa-mail-bulk"></i>
+                <span>Mailserver</span>
+              </a>
+              <div id="collapseMailserver" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                  <a class="collapse-item" href="{{ path('mailserver_mail_adressen') }}">Mailadressen verwalten</a>
+                  <a class="collapse-item" href="{{ path('mailserver_postausgang') }}">Postausgang</a>
+                  <a class="collapse-item" href="{{ path('mailserver_sent') }}">Versendete Mails</a>
+                </div>
+              </div>
+            </li>
+            <li class="nav-item {% if 'AccountController' in app.request.attributes.get("_controller") or 'StufenController' in app.request.attributes.get("_controller") or 'GlobaleVariabelnController' in app.request.attributes.get("_controller") or 'LogController' in app.request.attributes.get("_controller") %}active{% endif %}">
+              <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseEinstellungen" aria-expanded="true" aria-controls="collapseEinstellungen">
+                <i class="fas fa-fw fa-cog"></i>
+                <span>Einstellungen</span>
+              </a>
+              <div id="collapseEinstellungen" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                  <a class="collapse-item" href="{{ path('account_list') }}">Benutzer</a>
+                  <a class="collapse-item" href="{{ path('stufen') }}">Stufen</a>
+  {% if is_granted('ROLE_ROOT') %}
+                  <a class="collapse-item" href="{{ path('globale_variabeln') }}">Globale Variabeln</a>
+                  <a class="collapse-item" href="{{ path('log') }}">Logs</a>
+                  <a class="collapse-item" href="{{ path('userlog') }}">Sessions</a>
+  {% endif %}
+                </div>
+              </div>
+            </li>
+{% endif %}
+            <hr class="sidebar-divider d-none d-md-block">
+            <div class="text-center d-none d-md-inline">
+              <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+          </ul>
+          <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+              <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                  <i class="fa fa-bars"></i>
+                </button>
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item dropdown no-arrow">
+                      <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="mr-2 d-lg-inline text-gray-600 small">{{ app.user.username|capitalize }}</span>
+                        <i class="fas fa-user"></i>
+                      </a>
+                      <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                          <a class="dropdown-item" href="{{ path('account') }}">
+                            <i class="fas fa-lock fa-sm fa-fw mr-2 text-gray-400"></i>Passwort ändern</a>
+                          <div class="dropdown-divider"></div>
+                          <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                            <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                          Abmelden
+                        </a>
+                      </div>
+                    </li>
+                </ul>
+              </nav>
+              <div class="container-fluid">
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                  <h1 class="h3 mb-0 text-gray-800">{% block pagetitle %}Seitentitel nicht definiert!{% endblock %}</h1>
+                </div>
+                {% block body %}Inhalt{% endblock %}
+              </div>
+            </div>
+            <footer class="sticky-footer bg-white">
+              <div class="container my-auto">
+                <div class="copyright text-center my-auto">
+                  <span>&copy; {{ "now"|date("Y") }} Haslicevi | by <a href="mailto:tux@haslicevi.ch">Tux</a></span>
+                </div>
+              </div>
+            </footer>
+          </div>
+        </div>
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Abmelden</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">Bist du dir sicher, dass du dich abmelden möchtest?</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Abbrechen</button>
+          <a class="btn btn-primary" href="{{ path('app_logout') }}">Abmelden</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+  <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+  <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
+  <script src="{{ asset('vendor/chart.js/Chart.min.js') }}"></script>
+  <script src="{{ asset('js/demo/chart-area-demo.js') }}"></script>
+  <script src="{{ asset('js/demo/chart-pie-demo.js') }}"></script>
+  <script src="{{ asset('index.js') }}"></script>
+  <script>
+    $(document).ready(function() {
+      $.ajax({url: "{{ path('userlog_api', {csrf: app.session.get('_csrf/https-authenticate'), user: app.session.get('_security.last_username'), path: app.request.pathinfo|url_encode, controller: app.request.attributes.get("_controller")}) }}"});
+    });
+  </script>
+  {% block javascripts %}{% endblock %}
+</body>
+</html>
+{# {% endapply %} #}

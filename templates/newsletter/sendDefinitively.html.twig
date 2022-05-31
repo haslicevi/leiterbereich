@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block pagetitle %}Newsletter{% endblock %}
+
+{% block body %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Newsletter "{{ newsletter.betreff }}" senden</h6>
+    </div>
+    <div class="card-body">
+        <a href="{{ path('newsletter') }}" class="btn btn-info btn-icon-split mb-3">
+            <span class="icon text-white-50">
+                <i class="fas fa-undo-alt"></i>
+            </span>
+            <span class="text">Zurück</span>
+        </a>
+        <div class="card shadow my-4 border-bottom-success">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-success">Info</h6>
+            </div>
+            <div class="card-body">
+                Der Newsletter wurde erfolgreich an folgende Adressen versendet:
+            </div>
+        </div>
+        <ul class="list-group">
+            {% for mail in adressen %}
+                <li class="list-group-item">{{ mail }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

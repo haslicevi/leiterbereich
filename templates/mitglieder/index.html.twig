@@ -1,0 +1,122 @@
+{% extends 'base.html.twig' %}
+
+{% block pagetitle %}Mitglieder{% endblock %}
+
+{% block body %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Mitglieder</h6>
+    </div>
+    <div class="card-body">
+        <a href="{{ path('mitglieder_new') }}" class="btn btn-info btn-icon-split mb-4">
+            <span class="icon text-white-50">
+                <i class="fas fa-plus"></i>
+            </span>
+            <span class="text">Neues Mitglied</span>
+        </a>
+        <table class="table table-striped display nowrap" id="mitglieder">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    {# <th scope="col">Geburtstag</th> #}
+                    {# <th scope="col">Handy</th> #}
+                    {# <th scope="col">E-Mail</th> #}
+                    <th scope="col">Stufe</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Funktion</th>
+                    <th scope="col">data</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set counterI = 0 %}
+                {% for mitglied in mitglieder %}
+                    <tr>
+                        <td data-order="{{ mitglied.nachname }}">{{ mitglied.vorname }} {{ mitglied.nachname }} {% if(mitglied.ceviname) %} v/o {{ mitglied.ceviname }} {% endif %}</td>
+                        {# <td data-order="{{ mitglied.geburtstag|date('Ymd') }}">
+                            {% if mitglied.geburtstag %}
+                            {{ mitglied.geburtstag|date("d.m.Y") }}
+                            {% endif %}
+                        </td> #}
+                        {# <td><a href="tel:{{ mitglied.handy }}">{{ mitglied.handy }}</a></td> #}
+                        {# <td><a href="mailto:{{ mitglied.mail }}" class="small">{{ mitglied.mail }}</a></td> #}
+                        <td>{{ stufen[mitglied.stufe] }}</td>
+                        <td>{{ status[mitglied.status] }}</td>
+                        <td>{{ funktion[mitglied.funktion] }}</td>
+                        <td>{{ mitgliederArray[counterI] }}</td>
+                        <td align="right">
+                            {# <a href="mitglieder/info/{{ mitglied.id }}" class="btn btn-success btn-circle btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="Mehr anzeigen"><i class="fas fa-info"></i></a> #}
+                        {% if mitglied.token %}
+                            <a href="javascript:token('{{ mitglied.token }}','{{ mitglied.vorname }} {{ mitglied.nachname }}')" class="btn btn-warning btn-circle btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="Token"><i class="fas fa-lock"></i></a>
+                        {% endif %}
+                            <a href="{{ path('mitglieder_info', {id: mitglied.id}) }}" class="btn btn-info btn-circle btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="Info"><i class="fas fa-info"></i></a>
+                            <a href="{{ path('mitglieder_edit', {id: mitglied.id}) }}" class="btn btn-primary btn-circle btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="Bearbeiten"><i class="fas fa-edit"></i></a>
+                            <a href="javascript:delete_ajax('{{ path('mitglieder_delete', {id: mitglied.id}) }}', '{{ mitglied.vorname }} {{ mitglied.nachname }}')" class="btn btn-danger btn-circle btn-sm" data-toggle="tooltip" data-placement="top" title="Löschen"><i class="fas fa-trash"></i></a>
+                        </td>
+                    </tr>
+                {% set counterI = counterI + 1 %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="{{ asset('js/datatables.js') }}"></script>
+<link rel="stylesheet" href="{{ asset('css/datatables.css') }}">
+
+<script>
+function token(token, name) {
+    alert('Der Token für ' + name + ' lautet:\n' + token);
+}
+
+// Aufbereitung Datatables
+$(document).ready( function () {
+    $('#mitglieder').DataTable( {
+        "language": {
+            "url": "{{ asset('js/datatables_german.json') }}"
+        },
+        "order": [[0, "asc"]],
+        "columnDefs": [
+            {
+                "targets": [ 4 ],
+                "visible": false,
+                "searchable": true
+            }
+        ],
+        responsive: true,
+    } )
+    .search('{{ app.session.get('mitgliederSearchQuery') }}').draw(); // Suche nach letztem Search-Query Log in Session
+} );
+
+// Search-Query Log in Session via ajax
+$('#mitglieder').on('search.dt', function() {
+    var value = $('.dataTables_filter input').val();
+    var url = "{{ path('mitglieder_ajaxSearchQuery', {query: 'xvalx'}) }}";
+    if(value == '') { value = 'xxemptyxx'; }
+    url = url.replace('xvalx', urlencode(value));
+    $.ajax({url: url});
+});
+
+// Funktion = urlencode() in PHP
+function urlencode (str) {
+  str = (str + '')
+  return encodeURIComponent(str)
+    .replace(/!/g, '%21')
+    .replace(/'/g, '%27')
+    .replace(/\(/g, '%28')
+    .replace(/\)/g, '%29')
+    .replace(/\*/g, '%2A')
+    .replace(/~/g, '%7E')
+    .replace(/%20/g, '+')
+        .replace(/%/g, '_____')
+}
+</script>
+<style>
+    .paginate_button {
+        margin-left: 3px;
+        margin-right: 3px;
+    }
+</style>
+{% endblock %}

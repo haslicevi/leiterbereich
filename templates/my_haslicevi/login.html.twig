@@ -1,0 +1,359 @@
+{% extends 'public.html.twig' %}
+
+{% block pagetitle %}MyHaslicevi{% endblock %}
+
+{% block body %}
+<div>
+    <h4 class="mb-4">Willkommen {% if user.ceviname %}{{ user.ceviname }}{% else %}{{ user.vorname }}{% endif %}</h4>
+    <a href="{{ path('myhaslicevi_logout') }}" id="logoutButtonDesktop" class="btn btn-primary btn-icon-split" style="position: absolute; top: 15px; right: 20px;">
+        <span class="icon text-white-50">
+            <i class="fas fa-lock"></i>
+        </span>
+        <span class="text">Logout</span>
+    </a>
+</div>
+
+
+
+{# Navigationsleiste #}
+<ul class="nav nav-tabs" style="border-bottom: 0px solid transparent;">
+  <li class="nav-item">
+    <a class="nav-link {% if page == 'index' %}active{% endif %}" aria-current="page" href="{{ url|replace({'xpagex': 'index'}) }}">Startseite</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link {% if page == 'bilder' %}active{% endif %}" aria-current="page" href="{{ url|replace({'xpagex': 'bilder'}) }}">Bilder</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link {% if page == 'mails' %}active{% endif %}" aria-current="page" href="{{ url|replace({'xpagex': 'mails'}) }}">Mails</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link {% if page == 'dokumente' %}active{% endif %}" aria-current="page" href="{{ url|replace({'xpagex': 'dokumente'}) }}">Dokumente</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link {% if page == 'kontakt' %}active{% endif %}" aria-current="page" href="{{ url|replace({'xpagex': 'kontakt'}) }}">Kontakt</a>
+  </li>
+  <li id="logoutButtonMobile" class="nav-item">
+    <a class="nav-link" aria-current="page" href="{{ path('myhaslicevi_logout') }}"><i class="fas fa-lock mr-2"></i>Logout</a>
+  </li>
+</ul>
+
+<div id="mainCard"> {# Main-Card body #}
+
+
+
+{# Startseite #}
+
+{% if page == 'index' %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Fürs nächste Programm abmelden</h6>
+    </div>
+    <div class="card-body">
+        {% if formStatus %}
+            <p class="mb-4">Wenn du dich für ein Programm abmeldest, bekommst du einen Anwesenheitspunkt gutgeschrieben.</p>
+            <form id="loginform">
+                <input type="hidden" class="form-control" id="mitglied" value="{{ user.id }}">
+                <input type="hidden" class="form-control" id="event" value="{{ nextProgramm.id }}">
+                <div class="form-group">
+                    <label for="programm" required>Nächstes Programm</label>
+                    <input type="text" class="form-control" id="programm" value="{{nextProgramm.von|date("d.m.Y")}} - {% if nextProgramm.typ == 1 %}Nachmittagsprogramm{% else %}{{nextProgramm.name}}{% endif %}" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="hausnr">Grund</label>
+                    <input type="text" class="form-control" id="text">
+                </div>
+                <button type="button" class="btn btn-primary mt-2" onClick="abmelden()">Vom Programm abmelden</button>
+            </form>
+        {% else %}
+            <p>Du kannst dieses Formular leider nicht mehr bearbeiten. Dies kann zwei Gründe haben:</p>
+            <ul class="list-group">
+                <li class="list-group-item">Du hast dich bereits abgemeldet. Falls du trotzdem teilnehmen möchtest, kannst du einfach kommen. Die Leiter werden die Abmeldung korrigieren.</li>
+                <li class="list-group-item">Das Programm ist bereits vorbei. Ab Morgen kannst du dich für das nächste Programm abmelden.</li>
+            </ul>
+        {% endif %}
+    </div>
+</div>
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Anwesenheitspunkte</h6>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-xl-6 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Punkte</div>
+                                <div class="mb-0 font-weight-bold text-gray-800">{{ punkte[user.id][0] }}</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-calculator fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Rang innerhalbb der Stufe</div>
+                                <div class="mb-0 font-weight-bold text-gray-800">{{ rang }}.</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-trophy fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="alert alert-secondary mx-3"><b>Hinweis:</b> Für die Teilnahme an einem Nachmittagsprogramm bekommst du zwei Punkte, für die Teilnahme an einem Spezialprogramm drei Punkte und für die Teilnahme an einem Lager fünf Punkte gutgeschrieben.</div>
+        </div>
+    </div>
+</div>
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Deine Anwesenheiten im Jahr {{ "now"|date("Y") }}</h6>
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Datum</th>
+                    <th scope="col">Programm</th>
+                    <th scope="col">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for programm in programme %}
+                    {% if programm.typ == 1 %}
+                        {% set name = "Nachmittagsprogramm" %}
+                    {% else %}
+                        {% set name = programm.name %}
+                    {% endif %}
+                    <tr>
+                        <td>{{ programm.von|date("d.m.Y") }}</td>
+                        <td>{{ name }}</td>
+                        <td>{{ anwesenheiten[programm.id]|raw }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+
+
+{# Bilder #}
+
+{% if page == 'bilder' %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Bilder</h6>
+    </div>
+    <div class="card-body">
+        <p>Auf der öffentlichen Webseite sind nur die aktuellen Bilder in komprimierter Auflösung aufgeschaltet. Hier findest du das Bilderarchiv mit allen Bildern in voller Auflösung.</p>
+        <a class="btn btn-primary btn-icon-split mb-3" role="button" href="{{ bilderarchiv }}" target="_blank">
+            <span class="icon text-white-50">
+                <i class="fas fa-arrow-right"></i>
+            </span>
+            <span class="text">zum Bilderarchiv</span>
+        </a>
+    </div>
+</div>
+{% endif %}
+
+
+
+{# Mails #}
+
+{% if page == 'mails' %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Mails</h6>
+    </div>
+    <div class="card-body">
+        <p>Hier findest du die letzten Mails, die an dich (<b>{{ user.mail }}</b>) versandt wurden:</p>
+        <div class="list-group">
+            {% for mail in mails %}
+                <a href="{{ path('myhaslicevi_mail', {'id': mail.id, 'hash': mailHash}) }}" target="_blank" class="list-group-item list-group-item-action">
+                    {{ mail.date|date("d.m.Y") }} - {{ mail.subject }}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
+
+{# Dokumente #}
+
+{% if page == 'dokumente' %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Dokumente</h6>
+    </div>
+    <div class="card-body">
+        <p>Hier findest du einige Dokumente des Haslicevi:</p>
+        <div class="list-group">
+            {% set icons = {'pdf': 'file-pdf', 'word': 'file-word', 'excel': 'file-excel'} %} {# Icons für File-Typen #}
+            {% for dokument in dokumente %}
+                <a href="https://docs.haslicevi.ch/d/{{ dokument.url }}" target="_blank" class="list-group-item list-group-item-action">
+                    {% if dokument.url|split('.')|last in icons|keys %}
+                        <i class="mr-2 fas fa-{{ icons[dokument.url|split('.')|last] }}"></i>
+                    {% else %}
+                        <i class="mr-2 fas fa-file-alt"></i>
+                    {% endif %}
+                    {{ dokument.name }}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
+
+{# Kontakt #}
+
+{% if page == 'kontakt' %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Stufenleitung</h6>
+    </div>
+    <div class="card-body">
+        <p>Bei Fragen stehen dir deine Stufenleiter zur Verfügung:</p>
+        {% for leiter in stufenleiter %}
+            <div class="col-xl-12 col-md-12 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    {{leiter.ceviname}} v/o {{leiter.vorname}} {{leiter.nachname}}</div>
+                                <p class="mb-2 font-weight-bold text-gray-800">{{leiter.strasse}} {{leiter.nr}} <a href="https://www.google.com/maps/search/?api=1&query={{ leiter.strasse }}+{{ leiter.nr }}+{{ leiter.plz }}+{{ leiter.ort }}" target="_blank"><i class="fas fa-map-marker-alt"></i></a><br>{{leiter.plz}} {{leiter.ort}}</p>
+                                <a class="mb-0 font-weight-bold text-gray-800" href="mailto:{{leiter.ceviname|lower}}@haslicevi.ch">{{leiter.ceviname|lower}}@haslicevi.ch</a><br>
+                                <a class="mb-0 font-weight-bold text-gray-800" href="tel:{{leiter.handy}}">{{leiter.handy}}</a>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-user fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Abteilungsleitung</h6>
+    </div>
+    <div class="card-body">
+        {% for leiter in abteilungsleiter %}
+            <div class="col-xl-12 col-md-12 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    {{leiter.ceviname}} v/o {{leiter.vorname}} {{leiter.nachname}}</div>
+                                <p class="mb-2 font-weight-bold text-gray-800">{{leiter.strasse}} {{leiter.nr}} <a href="https://www.google.com/maps/search/?api=1&query={{ leiter.strasse }}+{{ leiter.nr }}+{{ leiter.plz }}+{{ leiter.ort }}" target="_blank"><i class="fas fa-map-marker-alt"></i></a><br>{{leiter.plz}} {{leiter.ort}}</p>
+                                <a class="mb-0 mt-2 font-weight-bold text-gray-800" href="mailto:{{leiter.ceviname|lower}}@haslicevi.ch">{{leiter.ceviname|lower}}@haslicevi.ch</a><br>
+                                <a class="mb-0 font-weight-bold text-gray-800" href="tel:{{leiter.handy}}">{{leiter.handy}}</a>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-user fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+
+</div> {# Main-Card body #}
+{% endblock %}
+
+{% block javascripts %}
+{% if formStatus %}
+<script>
+function abmelden() {
+    var uri = '{{ path('myhaslicevi_login_abmelden', {mitglied: 'xmitgliedx', event: 'xeventx', text: 'xtextx'}) }}';
+    uri = uri.replace('xmitgliedx', document.querySelector('#mitglied').value);
+    uri = uri.replace('xeventx', document.querySelector('#event').value);
+    uri = uri.replace('xtextx', document.querySelector('#text').value);
+    $.ajax({url: uri}).done(function(data) {
+        alert("Vielen Dank. Wir haben deine Abmeldung erhalten. Als Dankeschön schenken wir dir einen Punkt.");
+        location.reload();
+    });
+}
+</script>
+{% endif %}
+
+<style>
+#logoutButtonDesktop {display: block;}
+#logoutButtonMobile {display: none;}
+#mainCard {
+    padding: padding: 1rem !important;
+    {# background-color: #fff;
+    border: 1px solid #dee2e6; #}
+}
+.nav {
+    margin-bottom: 1.5rem;
+}
+
+@media screen and (max-width: 600px) {
+    #logoutButtonDesktop {display: none;}
+    #logoutButtonMobile {
+        display: block;
+        background-color: #0e6dfd;
+        border-bottom-left-radius: calc(.35rem - 1px);
+        border-bottom-right-radius: calc(.35rem - 1px);
+    }
+    #logoutButtonMobile a {
+        color: #fff;
+    }
+    #mainCard {
+        padding: 0;
+        background-color: transparent;
+        border: transparent solid 0px;
+    }
+    .nav {
+        margin-bottom: 3rem;
+        padding-left:2px;
+        padding-right:2px;
+    }
+    .nav li {
+        display:block !important;
+        width:100%;
+        margin:0px;
+        
+        background-color: #ebebeb;
+        border-color: #ebebeb;
+    }
+    .nav-link {
+        color: #444444;
+        border-top-left-radius: 0 !important;
+        border-top-right-radius: 0 !important;
+    }
+    .nav li.active {
+        border-bottom:1px solid #ddd!important;
+        margin: 0px;
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+    .nav li:first-child a {
+        border-top-left-radius: calc(.35rem - 1px) !important;
+        border-top-right-radius: calc(.35rem - 1px) !important;
+    }
+}
+</style>
+{% endblock %}

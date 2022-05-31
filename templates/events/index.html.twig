@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+
+{% block pagetitle %}Events{% endblock %}
+
+{% block body %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Events</h6>
+    </div>
+    <div class="card-body">
+        <a href="{{ path('events_new') }}" class="btn btn-info btn-icon-split mb-4">
+            <span class="icon text-white-50">
+                <i class="fas fa-plus"></i>
+            </span>
+            <span class="text">Neuer Event</span>
+        </a>
+        {% if app.request.get('_route') == 'events' %}
+            <a href="{{ path('events_all') }}" class="btn btn-secondary mb-3 float-right">Alle Events anzeigen</a>
+        {% else %}
+            <a href="{{ path('events') }}" class="btn btn-secondary mb-3 float-right">Aktuelle Events anzeigen</a>
+        {% endif %}
+        <table class="table table-striped" id="events">
+            <thead>
+                <tr>
+                    <th scope="col">Datum</th>
+                    <th scope="col">Typ</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Bemerkungen</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for event in events %}
+                    <tr class="border-left-{{typFarben[event.typ]}}">
+                        <td data-order="{{ event.von|date('Ymd') }}">
+                            {% if event.von == event.bis %}
+                                {{ event.von|date('d.m.Y') }}
+                            {% else %}
+                                {{ event.von|date('d.m.Y') }} - {{ event.bis|date('d.m.Y') }}
+                            {% endif %}
+
+                            {% if event.active == 1 %}
+                                {% set status = '<a href="javascript:void(0)" class="btn btn-success btn-circle btn-sm mr-2" ><i class="fas fa-check"></i></a>' %}
+                            {% else %}
+                                {% set status = '<a href="javascript:void(0)" class="btn btn-danger btn-circle btn-sm mr-2" ><i class="fas fa-times"></i></a>' %}
+                            {% endif %}
+                        </td>
+                        <td><span class="text-{{typFarben[event.typ]}}">{{ typ[event.typ] }}</span></td>
+                        <td>{{ event.name }}</td>
+                        <td>{{ status|raw }}</td>
+                        {# <td><a href="javascript:void(0)" class="btn btn-primary btn-circle btn-sm mr-2" ><i class="fas fa-edit"></i></a></td> #}
+                        <td>{{ event.bemerkungen }}</td>
+                        <td align="right" width="10%">
+                            <a href="{{ path('events_edit', {id: event.id}) }}" class="btn btn-primary btn-circle btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="Bearbeiten"><i class="fas fa-edit"></i></a>
+                            <a href="javascript:delete_ajax('{{ path('events_delete', {id: event.id}) }}', '{{ event.name }}')" class="btn btn-danger btn-circle btn-sm" data-toggle="tooltip" data-placement="top" title="Löschen"><i class="fas fa-trash"></i></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="{{ asset('js/datatables.js') }}"></script>
+<link rel="stylesheet" href="{{ asset('css/datatables.css') }}">
+
+<script>
+$(document).ready( function () {
+    $('#events').DataTable( {
+        "language": {
+            "url": "{{ asset('js/datatables_german.json') }}"
+        },
+        "order": [[0, "asc"]],
+        responsive: true,
+    } );
+} );
+</script>
+<style>
+    .paginate_button {
+        margin-left: 3px;
+        margin-right: 3px;
+    }
+</style>
+{% endblock %}

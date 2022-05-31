@@ -1,0 +1,158 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        p { margin: 0 0 10px 0 }
+    </style>
+{% endblock %}
+
+{% block pagetitle %}Mitglieder{% endblock %}
+
+{% block body %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Details für "{{ mitglied.vorname }} {{ mitglied.nachname }}"</h6>
+    </div>
+    <div class="card-body">
+        <a href="{{ path('mitglieder') }}" class="btn btn-info btn-icon-split mb-3">
+            <span class="icon text-white-50">
+                <i class="fas fa-undo-alt"></i>
+            </span>
+            <span class="text">Zurück</span>
+        </a>
+        <a href="{{ path('mitglieder_edit', {id: mitglied.id}) }}" class="btn btn-primary btn-icon-split mb-3 ml-3">
+            <span class="icon text-white-50">
+                <i class="fas fa-edit"></i>
+            </span>
+            <span class="text">Bearbeiten</span>
+        </a>
+        <div class="col-xl-12 col-md-6 mb-4 mt-3">
+            <div class="card shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            {# <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Name
+                            </div> #}
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{ mitglied.vorname }} {{ mitglied.nachname }}
+
+                                {% if mitglied.ceviname %}
+                                    v/o {{ mitglied.ceviname }}
+                                {% endif %}
+
+                                {# {% if mitglied.geschlecht %}
+                                    <i class="fas {{ geschlecht[mitglied.geschlecht] }}"></i>
+                                {% endif %} #}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            {% if mitglied.geschlecht %}
+                                <i class="fas fa-{{ geschlecht[mitglied.geschlecht] }} fa-2x text-gray-500"></i>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Kontakt</h6>
+                </div>
+                <div class="card-body">
+                    {% if mitglied.strasse %}
+                        <p>
+                            {{ mitglied.strasse }} {{ mitglied.nr }}
+                            <a href="https://www.google.com/maps/search/?api=1&query={{ mitglied.strasse }}+{{ mitglied.nr }}+{{ mitglied.plz }}+{{ mitglied.ort }}" target="_blank"><i class="fas fa-map-marker-alt"></i></a>
+                            <br>
+                            {{ mitglied.plz }} {{ mitglied.ort }}
+                        </p>
+                    {% endif %}
+
+                    {% if mitglied.mail %}
+                        <p><a href="mailto:{{ mitglied.mail }}">{{ mitglied.mail }}</a><p>
+                    {% endif %}
+
+                    {% if mitglied.telefon %}
+                        <p><b>Telefon:</b> <a href="tel:{{ mitglied.telefon }}">{{ mitglied.telefon }}</a></p>
+                    {% endif %}
+
+                    {% if mitglied.handy %}
+                        <p><b>Handy:</b> <a href="tel:{{ mitglied.handy }}">{{ mitglied.handy }}</a></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Persönliches</h6>
+                </div>
+                <div class="card-body">
+                    {% if mitglied.geburtstag %}
+                        <p><b>Geburtstag:</b> {{ mitglied.geburtstag|date('d.m.Y') }}
+                        ({{ date('now').diff((mitglied.geburtstag)).format('%y Jahre') }})</p>
+                    {% endif %}
+
+                    {% if mitglied.allergie %}
+                        <p><b>Allergien:</b> {{ mitglied.allergie }}</p>
+                    {% endif %}
+
+                    {% if mitglied.bemerkung %}
+                        <p><b>Bemerkungen:</b> {{ mitglied.bemerkung }}</p>
+                    {% endif %}
+
+                    {% if mitglied.ahvNummer %}
+                        <p><b>AHV-Nummer:</b> {{ mitglied.ahvNummer }}</p>
+                    {% endif %}
+
+                    {% if mitglied.jsNummer %}
+                        <p><b>J&S-Nummer:</b> {{ mitglied.jsNummer }}</p>
+                    {% endif %}
+
+                    {% if mitglied.bankkonto %}
+                        <p><b>Bankkonto:</b> {{ mitglied.bankkonto }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Rolle im Verein</h6>
+                </div>
+                <div class="card-body">
+                    {% if mitglied.stufe %}
+                        <p><b>Stufe:</b> {{ stufe[mitglied.stufe] }}</p>
+                    {% endif %}
+
+                    {% if (mitglied.funktion or mitglied.status) %}
+                        <p><b>Funktion:</b>
+                        
+                        {% if mitglied.funktion %}
+                            {{ funktion[mitglied.funktion] }}
+                        {% endif %}
+
+                        {% if (mitglied.funktion and mitglied.status) %} / {% endif %}
+
+                        {% if mitglied.status %}
+                            {{ status[mitglied.status] }}
+                        {% endif %}
+                        
+                        </p>
+                    {% endif %}
+
+                    {% if mitglied.kurs %}
+                        <p><b>Kurs:</b> {{ mitglied.kurs }}</p>
+                    {% endif %}
+
+                    {% if mitglied.krawatte %}
+                        <p><img src="{{ asset(['images/krawatten/', mitglied.krawatte, '.png']|join) }}" style="max-width: 80%; margin-top: 10px;" /></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

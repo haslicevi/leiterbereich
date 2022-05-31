@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block pagetitle %}Benutzerverwaltung{% endblock %}
+
+{% block body %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Benutzer</h6>
+    </div>
+    <div class="card-body">
+        <a href="{{ path('account_new') }}" class="btn btn-info btn-icon-split mb-3">
+            <span class="icon text-white-50">
+                <i class="fas fa-plus"></i>
+            </span>
+            <span class="text">Neuer Benutzer</span>
+        </a>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Rolle(n)</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.user|capitalize }}</td>
+                        {# <td>{% if 'ROLE_ADMIN' in user.roles %}Administrator{% else %}Benutzer{% endif %}</td> #}
+                        <td>
+                            {# {% for role in user.roles %}{{ role|replace({'ROLE_': ''})|capitalize }}{% if loop.last == false %},{% endif %} {% endfor %} #}
+                            {% for role in user.roles %}{{ rollen[role] }}{% if loop.last == false %}, {% endif %}{% endfor %}
+                        </td>
+                        <td align="right">
+                            <a href="{{ path('account_setpw', {id: user.id}) }}" class="btn btn-warning btn-circle btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="Neues Passwort setzen"><i class="fas fa-lock"></i></a>
+                            <a href="{{ path('account_edit', {id: user.id}) }}" class="btn btn-primary btn-circle btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="Bearbeiten"><i class="fas fa-edit"></i></a>
+                            <a href="javascript:delete_ajax('{{ path('account_delete', {id: user.id}) }}', '{{ user.user }}')" class="btn btn-danger btn-circle btn-sm" data-toggle="tooltip" data-placement="top" title="Löschen"><i class="fas fa-trash"></i></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block pagetitle %}Anwesenheiten{% endblock %}
+
+{% block body %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Rangliste</h6>
+    </div>
+    <div class="card-body">
+        <a href="{{ path('anwesenheiten_verteilen') }}" class="btn btn-info btn-icon-split mb-3">
+            <span class="icon text-white-50">
+                <i class="fas fa-list"></i>
+            </span>
+            <span class="text">Eintragen</span>
+        </a>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Punkte</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stufe in stufen %}
+                    {% if not loop.first %}<tr class="table-light"><td colspan="2"></td></tr>{% endif %}
+                    <tr class="table-primary"><td colspan="2"><b>{{ stufe.stufenname }}</b></td></tr>
+
+                    {% for person in personen[stufe.id] %}
+                        <tr>
+                            <td>{% if person[1].ceviname %}
+                                    {{ person[1].ceviname }}
+                                {% else %}
+                                    {{ person[1].vorname }} {{ person[1].nachname|first }}.
+                                {% endif %}
+                            </td>
+                            <td>{{ person[0] }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

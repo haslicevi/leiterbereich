@@ -1,0 +1,29 @@
+{% extends 'public.html.twig' %}
+
+{% block pagetitle %}Anmeldung{% endblock %}
+
+{% block body %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Anmelden im Haslicevi</h6>
+    </div>
+    <div class="card-body">
+        <div class="card shadow">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Anmeldformular</h6>
+            </div>
+            <div class="card-body">
+                {% for message in app.flashes('success') %}
+                    <div class="alert alert-success">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+                {{ form_start(form) }}
+                {{ form_widget(form) }}
+                {{ form_end(form) }}
+                <p class="mt-4 mb-0">Durch das Klicken auf "Definitiv anmelden" bestätige ich (der/die Erziehungsberechtige) die Mitgliedschaft meines Sohnes/meiner Tochter im CEVI Niederhasli Niederglatt. Zudem bestätige ich, die <a href="https://haslicevi.ch/anmelden/infos" target="_blank">Infos</a> gelesen und zur Kenntnis genommen zu haben.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

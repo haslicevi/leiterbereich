@@ -1,0 +1,49 @@
+{% apply spaceless %}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Datum</th>
+            <th scope="col">Name</th>
+            <th scope="col">Bemerkungen</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for event in events %}
+            {% if event.typ == 1 %}
+                {% set name = "Nachmittagsprogramm" %}
+            {% else %}
+                {% set name = event.name %}
+            {% endif %}
+
+            {% if event.link %}
+                {% set link = event.link %}
+                {% set cursor = 'pointer' %}
+            {% else %}
+                {% set link = 'javascript:void(0)' %}
+                {% set cursor = 'auto' %}
+            {% endif %}
+
+            {% if event.von|date('Ymd') < "now"|date('Ymd') %}
+                {% set textcolor = 'text-muted' %}
+                {% set badge = 'secondary' %}
+            {% else %}
+                {% set textcolor = '' %}
+                {% set badge = typFarben[event.typ] %}
+            {% endif %}
+
+            <tr onClick="window.location.href = '{{ link }}';" style="cursor: {{ cursor }};" class="{{ textcolor }}">
+                <td>
+                    {% if event.von == event.bis %}
+                        {{ event.von|date('d.m.Y') }}
+                    {% else %}
+                        {{ event.von|date('d.m.Y') }} - {{ event.bis|date('d.m.Y') }}
+                    {% endif %}
+                </td>
+                <td><span class="badge badge-{{ badge }}">{{ name }}</span></td>
+                <td>{{ event.bemerkungen }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endapply %}

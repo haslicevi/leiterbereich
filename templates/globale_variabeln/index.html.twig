@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block pagetitle %}Einstellungen{% endblock %}
+
+{% block body %}
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Globale Variabeln</h6>
+    </div>
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Schlüssel</th>
+                    <th scope="col">Wert</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for variable in var %}
+                    <tr>
+                        <td><code>{{ variable.k }}</code></td>
+                        <td>{{ variable.v }}</td>
+                        <td align="right">
+                            <a href="{{ path('globale_variabeln_edit', {id: variable.id}) }}" class="btn btn-primary btn-circle btn-sm mr-2" data-toggle="tooltip" data-placement="top" title="Bearbeiten"><i class="fas fa-edit"></i></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
